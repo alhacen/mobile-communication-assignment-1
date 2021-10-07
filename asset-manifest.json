@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/mobile-communication-assignment-1/static/css/main.1b577bae.chunk.css",
-    "main.js": "/mobile-communication-assignment-1/static/js/main.1e15843d.chunk.js",
-    "main.js.map": "/mobile-communication-assignment-1/static/js/main.1e15843d.chunk.js.map",
+    "main.js": "/mobile-communication-assignment-1/static/js/main.398b3090.chunk.js",
+    "main.js.map": "/mobile-communication-assignment-1/static/js/main.398b3090.chunk.js.map",
     "runtime-main.js": "/mobile-communication-assignment-1/static/js/runtime-main.f8804a9e.js",
     "runtime-main.js.map": "/mobile-communication-assignment-1/static/js/runtime-main.f8804a9e.js.map",
     "static/js/2.784bcdf6.chunk.js": "/mobile-communication-assignment-1/static/js/2.784bcdf6.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.f8804a9e.js",
     "static/js/2.784bcdf6.chunk.js",
     "static/css/main.1b577bae.chunk.css",
-    "static/js/main.1e15843d.chunk.js"
+    "static/js/main.398b3090.chunk.js"
   ]
 }

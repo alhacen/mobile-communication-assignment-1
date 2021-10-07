@@ -24,6 +24,7 @@ export default function App() {
     peer.on("open", async function (id) {
       window.peerId = id;
       setpeerId(id);
+      
     });
   }, [setpeerId, setPeer]);
   return (

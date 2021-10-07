@@ -8,60 +8,71 @@ const scroll = () => {
   }, 50);
 };
 const Message = ({ peerId, peer }) => {
+  //message type 0-> srcUser, 1->remoteUser, 2->info
   const notify = () => {
     window.sound.currentTime = 0;
     window.sound.play();
   };
   const [messages, setMessages] = useState([]);
   window.messages = messages;
-  console.log(messages);
   const [tmpMsg, setTmpMsg] = useState("");
   useEffect(() => {
+    let roomId = window.location.hash.substr(1)
+window.r = roomId
+    if (
+      peer&&
+      roomId.length === 36 &&
+      roomId[8] === "-" &&
+      roomId[13] === "-" &&
+      roomId[18] === "-" &&
+      roomId[23] === "-"
+    ) {
+      peer.on("open",()=>{
+        let conn = peer.connect(roomId);
+        window.p =peer
+        window.conn = conn;
+        conn.on("open", function () {
+          window.history.replaceState(null, null, ' ');
+  
+          setMessages([...window.messages, { type: 3, msg: "connected", time:Date.now()}]);
+          conn.on("data", function (data) {
+            notify();
+            setMessages([...window.messages, { type: 0, msg: data, time:Date.now()}]);
+          });
+        });
+
+      })
+    }
     peer?.on("connection", function (conn) {
       window.conn = conn;
       notify();
-      setMessages([...window.messages, { type: 3, msg: "Chat connected" }]);
+      setMessages([...window.messages, { type: 3, msg: "User connected", time:Date.now()}]);
 
       conn.on("data", function (data) {
         notify();
-        setMessages([...window.messages, { type: 0, msg: data }]);
+        setMessages([...window.messages, { type: 0, msg: data, time:Date.now()}]);
         scroll();
       });
     });
   }, [peer]);
   const handleSend = () => {
-    setMessages([...messages, { type: 1, msg: tmpMsg }]);
-    if (
-      tmpMsg.length === 36 &&
-      tmpMsg[8] === "-" &&
-      tmpMsg[13] === "-" &&
-      tmpMsg[18] === "-" &&
-      tmpMsg[23] === "-"
-    ) {
-      let conn = peer.connect(tmpMsg);
-      window.conn = conn;
-      conn.on("open", function () {
-        // idkwhattosay = [];
-        setMessages([...window.messages, { type: 3, msg: "connected" }]);
-        conn.on("data", function (data) {
-          notify();
-          setMessages([...window.messages, { type: 0, msg: data }]);
-        });
-      });
-    } else {
-      try {
-        window.conn.send(tmpMsg);
-      } catch (e) {}
-    }
+    if(tmpMsg==="")
+    return
+    setMessages([...messages, { type: 1, msg: tmpMsg, time:Date.now()}]);
+    
+    try {
+      window.conn.send(tmpMsg);
+    } catch (e) {}
+    
     scroll();
     setTmpMsg("");
   };
   useEffect(() => {
-    if (peerId !== "")
+    if (peerId !== "" && window.location.hash ==="")
       setMessages([
-        ...messages,
-        { type: 3, msg: `Your Id is` },
-        { type: 3, msg: peerId }
+        ...window.messages,
+        { type: 3, msg: `Your Room Id is` },
+        { type: 3, msg: <a className="hover:underline" href={`${window.location.href}#${peerId}`}>{`${window.location.href}#${peerId}`}</a> }
       ]);
   }, [peerId, setMessages]);
   return (
@@ -72,12 +83,11 @@ const Message = ({ peerId, peer }) => {
       >
         {messages.map((_) => {
           return (
-            <MessageComp key={_.msg} me={_.type}>
+            <MessageComp key={_.time  } me={_.type}>
               {_.msg}
             </MessageComp>
           );
         })}
-        {/* return <MessageComp>${_.msg}</MessageComp>; */}
       </div>
       <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
         <form
